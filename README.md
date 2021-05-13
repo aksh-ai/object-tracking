@@ -6,8 +6,9 @@ Simple object tracking with OpenCV using C++.
 
 OpenCV has to be setup. Refer [OpenCV](https://docs.opencv.org/master/d7/d9f/tutorial_linux_install.html) docs.
 
-~g++ Main.cpp -o output -std=c++11 `pkg-config --cflags --libs opencv`~
-
+```
+g++ Main.cpp -o output -std=c++11 `pkg-config --cflags --libs opencv`
+```
 
 ## Execution
 
