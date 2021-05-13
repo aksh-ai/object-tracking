@@ -1,4 +1,22 @@
-#include "Tracker.h"
+#include <opencv2/opencv.hpp>
+#include <opencv2/objdetect.hpp>
+#include <opencv2/highgui.hpp>
+#include <opencv2/imgproc.hpp>
+
+#include <iostream>
+#include <stdio.h>
+#include <math.h>
+#include <string>
+#include <sstream>
+
+class Tracker {
+	public:
+		static void run();
+	
+	private:
+		static cv::Mat thresholdedImg(cv::Mat original, cv::Scalar lowHSV, cv::Scalar highHSV, bool removeNoise, bool convertBackToRGB);
+		static cv::Vec3b RGBtoHSV(float r, float g, float b);
+};
 
 const static int SEARCHING = 0;
 const static int TRAINING = 1;
@@ -14,7 +32,7 @@ void Tracker::run() {
 	}
 
 	cv::Mat edges;
-	cv::namedWindow("Window", CV_WINDOW_AUTOSIZE);
+	cv::namedWindow("Window", cv::WINDOW_AUTOSIZE);
 
 	int lastLowH = 0;
 	int lastHighH = 179;
@@ -61,35 +79,23 @@ void Tracker::run() {
 	//	int highV = 250;
 
 	// Green ball
-	//	int lowH = 35;
-	//	int highH = 80;
-	//	int lowS = 50;
-	//	int highS = 175;
-	//	int lowV = 20;
-	//	int highV = 210;
+	int lowH = 35;
+	int highH = 80;
+	int lowS = 50;
+	int highS = 175;
+	int lowV = 20;
+	int highV = 210;
 
-	int lowH = 95;
-	int highH = 110;
+	// int lowH = 95;
+	// int highH = 110;
 	
-	int lowS = 90;
-	int highS = 220;
+	// int lowS = 90;
+	// int highS = 220;
 	
-	int lowV = 150;
-	int highV = 225;
-
+	// int lowV = 150;
+	// int highV = 225;
 
 	bool displayOriginal = true;
-
-	/*
-	cvCreateTrackbar("LowH", "Control", &lowH, 179); //Hue (0 - 179)
-	cvCreateTrackbar("HighH", "Control", &highH, 179);
-
-	cvCreateTrackbar("LowS", "Control", &lowS, 255); //Saturation (0 - 255)
-	cvCreateTrackbar("HighS", "Control", &highS, 255);
-
-	cvCreateTrackbar("LowV", "Control", &lowV, 255); //Value (0 - 255)
-	cvCreateTrackbar("HighV", "Control", &highV, 255);
-	*/
 
 	int state = SEARCHING;
 	int trainingState = 0;
@@ -111,7 +117,7 @@ void Tracker::run() {
 
 	while(true) {
 		if (state != TRAINING) {
-			bool success = cap.read(imgOriginal); // read a new frame from video
+			bool success = cap.read(imgOriginal);
 			
 			cv::flip(imgOriginal, imgOriginal, 1);
 			
@@ -122,7 +128,7 @@ void Tracker::run() {
 		}
 
 		cv::Mat imgGray;
-		cvtColor(imgOriginal, imgGray, CV_BGR2GRAY);
+		cvtColor(imgOriginal, imgGray, cv::COLOR_BGR2GRAY);
 
 		cv::Mat imgThresholded = thresholdedImg(imgOriginal, cv::Scalar(lowH, lowS, lowV), cv::Scalar(highH, highS, highV), true, false);
 
@@ -159,7 +165,7 @@ void Tracker::run() {
 
 		if (state == SEARCHING) {
 			std::vector<cv::Vec3f> circles;
-		    cv::HoughCircles(imgGray, circles, CV_HOUGH_GRADIENT, 2, imgGray.rows * 2, 250, 125, 0, 0);
+		    cv::HoughCircles(imgGray, circles, cv::HOUGH_GRADIENT, 2, imgGray.rows * 2, 250, 125, 0, 0);
 
 		    for( size_t i = 0; i < circles.size(); i++ ) {
 				cv::Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
@@ -259,9 +265,7 @@ void Tracker::run() {
 
 			double internalAbsoluteChange = ((double) internal[0] - lastInternalAverage[0] + internal[1] - lastInternalAverage[1] + internal[2] - lastInternalAverage[2]) / 3;
 			double externalAbsoluteChange = ((double) external[0] - lastExternalAverage[0] + external[1] - lastExternalAverage[1] + external[2] - lastExternalAverage[2]) / 3;
-			//double internalPercentChange = (double) (internal[0] - lastInternalAverage[0]) / internal[0];
-			//double externalPercentChange = (double) (external[0] - lastExternalAverage[0]) / external[0];
-
+			
 			if (lastLowH != lowH || lastHighH != highH || lastLowS != lowS || lastHighS != highS || lastLowV != lowV || lastHighV != highV) {
 				/*std::cout << "Training state: " << trainingState << std::endl;
 				//std::cout << "Internal percent change: " << internalPercentChange << std::endl;
@@ -442,23 +446,14 @@ void Tracker::run() {
 				lowV = std::max(0, hsv[2] - rangeV);
 				highV = std::min(255, hsv[2] + rangeV);
 
-				cvCreateTrackbar("LowH", "Control", &lowH, 179); //Hue (0 - 179)
-				cvCreateTrackbar("HighH", "Control", &highH, 179);
+				cv::createTrackbar("LowH", "Control", &lowH, 179); //Hue (0 - 179)
+				cv::createTrackbar("HighH", "Control", &highH, 179);
 
-				cvCreateTrackbar("LowS", "Control", &lowS, 255); //Saturation (0 - 255)
-				cvCreateTrackbar("HighS", "Control", &highS, 255);
+				cv::createTrackbar("LowS", "Control", &lowS, 255); //Saturation (0 - 255)
+				cv::createTrackbar("HighS", "Control", &highS, 255);
 
-				cvCreateTrackbar("LowV", "Control", &lowV, 255); //Value (0 - 255)
-				cvCreateTrackbar("HighV", "Control", &highV, 255);
-
-				/*for (int x = 0; x < imgTraining.rows; x++) {
-				    for (int y = 0; y < imgTraining.cols; y++) {
-				        double dist = sqrt((y - lastCenter.x) * (y - lastCenter.x) + (x - lastCenter.y) * (x - lastCenter.y));
-				        if (dist < lastRadius) {
-				        	imgTraining.at<cv::Vec3b>(x, y) = cv::Vec3b(average[0], average[1], average[2]);
-				        }
-				    }
-				}*/
+				cv::createTrackbar("LowV", "Control", &lowV, 255); //Value (0 - 255)
+				cv::createTrackbar("HighV", "Control", &highV, 255);
 			}
 
 			else {
@@ -485,11 +480,11 @@ cv::Mat Tracker::thresholdedImg(cv::Mat original, cv::Scalar lowHSV, cv::Scalar 
 	inRange(imgHSV, lowHSV, highHSV, imgThresholded); //Threshold the image
 
 	if (removeNoise) {
-		//morphological opening (remove small objects from the foreground)
+		// morphological opening (remove small objects from the foreground)
 		erode(imgThresholded, imgThresholded, getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)) );
 		dilate( imgThresholded, imgThresholded, getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)) );
 
-		//morphological closing (fill small holes in the foreground)
+		// morphological closing (fill small holes in the foreground)
 		dilate( imgThresholded, imgThresholded, getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)) );
 		erode(imgThresholded, imgThresholded, getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)) );
 	}
@@ -499,18 +494,6 @@ cv::Mat Tracker::thresholdedImg(cv::Mat original, cv::Scalar lowHSV, cv::Scalar 
 	if (convertBackToRGB) {
 		cvtColor(imgThresholded, imgThresholded, cv::COLOR_GRAY2RGB);
 	}
-
-	/*for (int x = 0; x < imgThresholded.rows; x++) {
-	    for (int y = 0; y < imgThresholded.cols; y++) {
-	        cv::Vec3b &color = imgThresholded.at<cv::Vec3b>(x, y);
-	        if (color[0] > 127) {
-	        	color = cv::Vec3b(255, 255, 255);
-	        }
-	        else {
-	        	color = cv::Vec3b(255, 255, 255);
-	        }
-	    }
-	}*/
 
 	return imgThresholded;
 }
