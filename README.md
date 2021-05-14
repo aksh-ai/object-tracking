@@ -16,5 +16,6 @@ Use: `./output`
 
 Grab a green ball and show it in front of the camera, wait for the tracker to detect the object and press `t` to start training the tracker to detect and track the particular object.
 
+Press `c` to clear the lines drawn on the GUI window while tracking the ball.
 
 **Note:** To be updated.
