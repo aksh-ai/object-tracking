@@ -46,13 +46,13 @@ void Tracker::run() {
 	cv::Vec3b lastInternalAverage = cv::Vec3b(0, 0, 0);
 	cv::Vec3b lastExternalAverage = cv::Vec3b(255, 255, 255);
 
-	// Initial
-	//	int lowH = 0;
-	//	int highH = 179;
-	//	int lowS = 0;
-	//	int highS = 125;
-	//	int lowV = 0;
-	//	int highV = 255;
+	// // Initial
+	// int lowH = 0;
+	// int highH = 179;
+	// int lowS = 0;
+	// int highS = 125;
+	// int lowV = 0;
+	// int highV = 255;
 
 	// Green ball
 	int lowH = 35;
