@@ -54,30 +54,6 @@ void Tracker::run() {
 	//	int lowV = 0;
 	//	int highV = 255;
 
-	// Face
-	//	int lowH = 0;
-	//	int highH = 25;
-	//	int lowS = 85;
-	//	int highS = 135;
-	//	int lowV = 100;
-	//	int highV = 255;
-
-	// Red button
-	//	int lowH = 0;
-	//	int highH = 12;
-	//	int lowS = 155;
-	//	int highS = 225;
-	//	int lowV = 115;
-	//	int highV = 255;
-
-	// Red ball
-	//	int lowH = 160;
-	//	int highH = 179;
-	//	int lowS = 85;
-	//	int highS = 190;
-	//	int lowV = 135;
-	//	int highV = 250;
-
 	// Green ball
 	int lowH = 35;
 	int highH = 80;
@@ -85,15 +61,6 @@ void Tracker::run() {
 	int highS = 175;
 	int lowV = 20;
 	int highV = 210;
-
-	// int lowH = 95;
-	// int highH = 110;
-	
-	// int lowS = 90;
-	// int highS = 220;
-	
-	// int lowV = 150;
-	// int highV = 225;
 
 	bool displayOriginal = true;
 
@@ -267,13 +234,15 @@ void Tracker::run() {
 			double externalAbsoluteChange = ((double) external[0] - lastExternalAverage[0] + external[1] - lastExternalAverage[1] + external[2] - lastExternalAverage[2]) / 3;
 			
 			if (lastLowH != lowH || lastHighH != highH || lastLowS != lowS || lastHighS != highS || lastLowV != lowV || lastHighV != highV) {
-				/*std::cout << "Training state: " << trainingState << std::endl;
-				//std::cout << "Internal percent change: " << internalPercentChange << std::endl;
-				//std::cout << "External percent change: " << externalPercentChange << std::endl;
+				/*
+				std::cout << "Training state: " << trainingState << std::endl;
+				std::cout << "Internal percent change: " << internalPercentChange << std::endl;
+				std::cout << "External percent change: " << externalPercentChange << std::endl;
 				std::cout << "Internal absolute change: " << internalAbsoluteChange << std::endl;
 				std::cout << "External absolute change: " << externalAbsoluteChange << std::endl;
 				std::cout << "New internal: " << internal << ", Old internal: " << lastInternalAverage << std::endl;
-				std::cout << "New external: " << external << ", Old external: " << lastExternalAverage << std::endl;*/
+				std::cout << "New external: " << external << ", Old external: " << lastExternalAverage << std::endl;
+				*/
 			}
 
 			if (trainingState > 12) {
