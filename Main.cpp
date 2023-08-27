@@ -1,5 +1,6 @@
 #include "Tracker.cpp"
 
-int main() {
+int main()
+{
 	Tracker::run();
 }
