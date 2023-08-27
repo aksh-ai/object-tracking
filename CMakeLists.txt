@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 2.8)
+project (object-tracking )
+find_package (OpenCV REQUIRED)
+include_directories( ${OpenCV_INCLUDE_DIRS} )
+add_executable( object-tracking Main.cpp)
+target_link_libraries( object-tracking ${0penCV_LIBS})
